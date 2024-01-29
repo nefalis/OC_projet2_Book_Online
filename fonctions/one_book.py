@@ -2,7 +2,6 @@
 import requests
 from bs4 import BeautifulSoup
 import urllib.request
-import csv
 from fonctions.save_picture import recup_img
 
 
@@ -36,10 +35,9 @@ def recup_book(url_one_book):
 
     # On récupère l'image - balise entière avec src et alt
     image = soup.find('div', class_="item active").find('img')
-
     # pour enregistrer l'image
     image_url = recup_img(soup)
-    name_img = "img_book.jpg"
+    name_img = f"{title}_image.jpg"
     # urlretrieve va enregistré l'image avec son nom et l'image
     urllib.request.urlretrieve(image_url, name_img)
 
@@ -56,41 +54,3 @@ def recup_book(url_one_book):
     print("categorie", category)
     print("description", product_description)
     print("etoile", review_rating)
-
-
-"""# Création fichier CSV
-def write_csv():
-    # Création de l'en-tête pour le fichier CSV
-    en_tete = ["product_page_url",
-               "universal_ product_code",
-               "title",
-               "price_including_tax",
-               "price_excluding_tax",
-               "number_available",
-               "product_description",
-               "category",
-               "review_rating",
-               "image_url"]
-
-    # Création d'un fichier pour écrire dans le fichier livre_data.csv
-    with open('livre_data.csv', 'w') as fichier_csv:
-        # Création objet writer (écriture) avec ce fichier
-        writer = csv.writer(fichier_csv, delimiter=',')
-        # Pour écrire la 1ere ligne
-        writer.writerow(en_tete)
-        # Permet de boucler les élements
-        writer.writerow([product_page_url,
-                         universal_product_code,
-                         title,
-                         price_including_tax,
-                         price_excluding_tax,
-                         number_available,
-                         product_description,
-                         category,
-                         review_rating,
-                         image_url])
-
-
-write_csv()
-print("fichier csv fait")
-"""

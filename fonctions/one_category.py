@@ -2,9 +2,12 @@
 import requests
 from bs4 import BeautifulSoup
 import urllib.request
+import csv
+import os
 from fonctions.save_picture import recup_img
 from fonctions.create_csv import write_csv
 
+print("trululu")
 """# Création fichier CSV
 def write_csv(file_name, data):
     # création du dossier data_file s'il n'existe pas
@@ -12,19 +15,20 @@ def write_csv(file_name, data):
         os.makedirs('data_file')
 
     # Création d'un fichier pour écrire dans  data_file.csv
-    with open('data_file/' + file_name, 'a', encoding='utf-8', newline='') as file_csv:
+    with open('data_file/' + file_name + '.csv', 'a', encoding='utf-8', newline='') as file_csv:
         # Création objet writer (écriture) avec ce fichier
         writer = csv.writer(file_csv, delimiter=',')
         # Permet de boucler les éléments
         writer.writerow(data)"""
 
-def one_category(base_url, file_name):
+def one_category(url_one_category, file_name):
 
-    """# Supprimer le fichier CSV s'il existe déjà
+    print("pouet")
+    # Supprimer le fichier CSV s'il existe déjà
     if os.path.exists(file_name):
-        os.remove(file_name)"""
+        os.remove(file_name)
 
-    # Écrire l'en-tête une seule fois avant la boucle
+    """# Écrire l'en-tête une seule fois avant la boucle
     header = ["product_page_url",
               "universal_ product_code",
               "title",
@@ -36,12 +40,11 @@ def one_category(base_url, file_name):
               "review_rating",
               "image_url"]
 
-    write_csv(file_name, header)
+    write_csv(file_name, header)"""
 
-    page_number = 1
     # Récupération de la page catégorie. page number permet d'initialisé la page actuelle a 1.
-
-    next_page_url = base_url
+    page_number = 1
+    next_page_url = url_one_category
     # boucle pour parcourir les pages
     while next_page_url:
         # obtenir le contenu HTML de la page actuelle et beautiful pour analyser l'HTML
@@ -53,7 +56,7 @@ def one_category(base_url, file_name):
         for book_link in book_links:
             # boucle sur les liens pour construire url final
             relative_url = book_link.a['href']
-            final_url = base_url + relative_url
+            final_url = url_one_category + relative_url
 
             # extraction des donnes sur la page de chaque livre
             # 2eme requete pour acceder à la page specifique  du livre
@@ -63,9 +66,11 @@ def one_category(base_url, file_name):
 
             product_page_url = final_url
             title = soup_book.find("h1").text
+            print("titre", title)
             review_rating = soup_book.find('p', class_='star-rating').get('class').pop()
             product_description = soup_book.find("article", {"class": "product_page"}).find_all("p")[3].text
             category = soup_book.find("ul", {"class": "breadcrumb"}).find_all("a")[2].text
+            print("categorie", category)
             # On recherche tout les elements td de la page
             list_table = soup_book.find_all('td')
             # On recherche de l'element précis contenu uniquement dans les td
@@ -76,7 +81,7 @@ def one_category(base_url, file_name):
 
             # pour enregistrer l'image
             image_url = recup_img(soup_book)
-            name_img = "imageSave.jpg"
+            name_img = f"{title}_image.jpg"
             # urlretrieve va enregistré l'image avec son nom et l'image
             urllib.request.urlretrieve(image_url, name_img)
 
@@ -93,13 +98,14 @@ def one_category(base_url, file_name):
                     image_url]
 
             # Appeler la fonction pour écrire dans le fichier CSV
+            file_name = category
             write_csv(file_name, data)
 
         # Chercher le lien vers la page suivante
         # Mise à jour de next_page_url si une page suivante existe, sinon, le définir sur None pour arrêter la boucle.
         next_page = soup.find('li', class_='next')
         if next_page:
-            next_page_url = base_url + next_page.a['href']
+            next_page_url = url_one_category + next_page.a['href']
             page_number += 1
         else:
             next_page_url = None
@@ -108,12 +114,11 @@ def one_category(base_url, file_name):
     print(f"Extraction terminée.")
     print("fichier csv fait")
 
-
 # programme principal
 
-"""file_name = 'book_data.csv'
-
-url_one_category = "https://books.toscrape.com/catalogue/category/books_1/"
+"""
+file_name = 'book_data.csv'
+base_url = "https://books.toscrape.com/catalogue/category/books_1/"
 
 one_category(base_url, file_name)"""
 
