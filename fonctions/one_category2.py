@@ -5,6 +5,7 @@ import urllib.request
 import os
 from fonctions.save_picture import recup_img
 from fonctions.create_csv import write_csv
+from fonctions.save_picture import save_img
 
 # fonction pour extraire les informations des livres d'une catégorie
 def one_category(base_url, file_name):
@@ -76,7 +77,9 @@ def one_category(base_url, file_name):
             file_name = category
             write_csv(file_name, data, category)
 
-            # Nettoyage des caractere non supporter pour le nom de l'image
+            save_img(image_url, title, category)
+
+            """# Nettoyage des caractere non supporter pour le nom de l'image
             clean_title = title.replace(":", "").replace("/", " ").replace('"', '').replace(
                 'Ã©', 'é').replace(",", "").replace(".", "").replace("&", "").replace("*", "").replace("?", "").replace(
                 "#", "")
@@ -84,7 +87,7 @@ def one_category(base_url, file_name):
             # Chemin pour enregistrer l'image
             image_path = os.path.join('data_file', category, name_img)
             # urlretrieve va enregistré l'image avec son nom et l'image
-            urllib.request.urlretrieve(image_url, image_path)
+            urllib.request.urlretrieve(image_url, image_path)"""
 
         # Mise à jour de next_page_url si une page suivante existe, sinon, le définir sur None pour arrêter la boucle.
         next_page = soup.find('li', class_='next')
