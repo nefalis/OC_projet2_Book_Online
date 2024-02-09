@@ -1,4 +1,4 @@
-# librairies utilisées
+# Librairies utilisées
 import requests
 from bs4 import BeautifulSoup
 import os
@@ -6,12 +6,10 @@ from fonctions.save_picture import recup_img
 from fonctions.create_csv import write_csv
 from fonctions.save_picture import save_img
 
-# fonction pour extraire les informations des livres d'une catégorie
+# Fonction pour extraire les informations des livres d'une catégorie
 def one_category(base_url, file_name):
-    print("start one cat")
     # Nom du dossier où seront stocké les données extraites
     data_folder = 'data_file'
-    # Chemin du dossier image
 
     # Vérification (exists) et création des dossiers (makedirs)
     if not os.path.exists(data_folder):
@@ -25,7 +23,6 @@ def one_category(base_url, file_name):
 
     # Boucle pour parcourir les pages de la catégorie
     while next_page_url:
-        print("boucle while")
         # Récupération du contenu HTML de la page actuelle et beautiful pour analyser l'HTML
         response = requests.get(next_page_url)
         soup = BeautifulSoup(response.content, 'lxml')
@@ -35,12 +32,11 @@ def one_category(base_url, file_name):
 
         # Boucle sur les liens des livres pour extraire les informations
         for book_link in book_links:
-            print("je recup un livre")
             relative_url = book_link.a['href']
             # URL complet du livre
             final_url = base_url + relative_url
 
-            # extraction des données sur la page de chaque livre
+            # Extraction des données sur la page de chaque livre
             response_book = requests.get(final_url)
             soup_book = BeautifulSoup(response_book.content, 'lxml')
 
@@ -77,9 +73,8 @@ def one_category(base_url, file_name):
             file_name = category
             write_csv(file_name, data, category)
 
+            # Appel de la fonction pour enregistrer les images
             save_img(image_url, title, category)
-
-            print("category livre", category)
 
         # Mise à jour de next_page_url si une page suivante existe, sinon, le définir sur None pour arrêter la boucle.
         next_page = soup.find('li', class_='next')
@@ -93,5 +88,5 @@ def one_category(base_url, file_name):
 base_url = "https://books.toscrape.com/catalogue/category/books/childrens_11/"
 file_name = "exemple.csv"
 
-# Appel de la fonction pour extraire les données
+# Appel de la fonction pour extraire les données de la catégorie children
 one_category(base_url, file_name)"""
