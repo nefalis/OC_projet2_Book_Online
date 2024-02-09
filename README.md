@@ -24,9 +24,12 @@ cd projet2-Books-Online
  ```
 
 ### Packages
+
+ si vous avez python 3.x, il est recommandé d'utiliser pip3 pour éviter toute confusion avec les installations de Python 2.x qui utilisent simplement pip
+
 Installer les modules nécessaires :
 ``` 
-pip -r requirements.txt
+pip3 -r requirements.txt
  ```
 
 ### Exécution
